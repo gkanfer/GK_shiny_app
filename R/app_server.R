@@ -7,7 +7,6 @@ app_server <- function(input, output,session) {
   r <- reactiveValues()
   
   img1 <- callModule(mod_img_setup_server, "img_setup_ui_1", r)
-  
   dapi_norm = callModule(mod_norm_ch_server, "norm_ch_ui_1", img=img1, n=reactive(r$mod3$DAPI), r)
   callModule(mod_nuc_params_server, "nuc_params_ui_1", r)
   nseg = callModule(mod_n_segment_server, "n_segment_ui_1", nuc_norm=dapi_norm, params=reactive(r$mod4))

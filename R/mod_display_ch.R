@@ -35,6 +35,7 @@ mod_display_ch_server <- function(input, output, session, img, n, r){
     #browser()
     size <- as.numeric(dim(img()))
     chA <- img()[1:size[1], 1:size[2],n()] 
+    colorMode(chA)<-"Grayscale"
     minCH <- min(as.vector(chA))
     maxCH <- min(as.vector(chA))
     ch_f<- normalize(chA, ft=c(0,1), c(minCH, maxCH))

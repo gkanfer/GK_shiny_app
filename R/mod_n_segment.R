@@ -16,23 +16,24 @@
 mod_n_segment_ui <- function(id){
   ns <- NS(id)
   tagList(
-    # wellPanel(
-    #   checkboxInput(ns("bool_seg"), "Use watershed algorithm for segmentation? (Default: binary segmentation")
-    # ),
+    wellPanel(
+      checkboxInput(ns("bool_seg"), "Use watershed algorithm for segmentation? (Default: binary segmentation")
+    ),
     fluidRow(
       splitLayout(
-        h5("Nucleus Channel", align="center"),
-        plotOutput(ns("dapi_normal")),
+        tags$div(class = "header", checked = NA,
+        h5("Nucleus Channel", align="center")),
+        plotOutput(ns("dapi_normal"),width = "100%"),
         h5("Mask", align="center"),
-        plotOutput(ns("mask"))
+        plotOutput(ns("mask"),width = "100%")
       )
     ),
     fluidRow(
       splitLayout(
         h5("Segmented: color masks", align="center"),
-        plotOutput(ns("color")),
+        plotOutput(ns("color"),width = "100%"),
         h5("Segmented: img outline", align="center"),
-        plotOutput(ns("outline"))
+        plotOutput(ns("outline"),width = "100%")
       )
     )
   )
@@ -46,7 +47,6 @@ mod_n_segment_ui <- function(id){
 
 mod_n_segment_server <- function(input, output, session, params, nuc_norm){
   ns <- session$ns
-  
   dapi_norm <- reactive({
     #browser()
     dapi_norm= nuc_norm()*params()$nuc_int
@@ -61,6 +61,7 @@ mod_n_segment_server <- function(input, output, session, params, nuc_norm){
     mk3 = makeBrush(filter, shape= "diamond")
     nmask0 = opening(nmask0, mk3)
     nmask2 = fillHull(nmask0)
+    #colorMode(nmask2)<-"Grayscale"
   })
   nseg <- reactive({
     size_s <- params()$nuc_size_s
@@ -74,9 +75,12 @@ mod_n_segment_server <- function(input, output, session, params, nuc_norm){
     nf = computeFeatures.shape(nmask)
     nr = which(nf[,2] < size_s)
     nseg = rmObjects(nmask, nr)
-    nseg=fillHull(nseg)
+    #colorMode(nseg)<-"Grayscale"
+    #nseg=fillHull(nseg)
   })
   seg <- reactive({
+    # browser()
+    # colorMode(nseg())<-"Grayscale"
     seg = paintObjects(nseg(),toRGB(dapi_norm()),opac=c(1, 1),col=c("red",NA), thick=TRUE, closed=TRUE)
   })
   output$dapi_normal <- renderPlot({

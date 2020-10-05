@@ -41,7 +41,9 @@ mod_img_setup_server <- function(input, output, session, r){
     f = input$file
     if (is.null(f))
       return(NULL)
-    readImage(f$datapath, all=T)
+      img1<-readImage(f$datapath, all=T)
+      colorMode(img1)<-"Grayscale"
+      return(img1)    
   })
   
   
@@ -51,6 +53,8 @@ mod_img_setup_server <- function(input, output, session, r){
   callModule(mod_display_ch_server, "display_ch_ui_4", img=img1, n=reactive(4), r)
   callModule(mod_select_ch_server, "select_ch_ui_1", r)
   
+  
+
   return(img1)
  
 }
